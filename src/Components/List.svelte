@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { Shop } from "../Interfaces";
   import ShopCard from "./ShopCard.svelte";
-
-  export let shops: array;
+  
+  export let shops: Shop[];
 </script>
 
 <div class="container">
@@ -15,7 +16,5 @@
     display: flex;
     flex-direction: column;
   }
-
-  
 
 </style>

@@ -1,3 +1,64 @@
+# Things to do
+
+## TODO Set home location
+Click and hold to prompt set home location.
+Display on side bar (tidy this).
+Recalculate shop distances.
+
+## TODO New markers on map clicks
+Click on map to prompt to add a new marker
+takes name and price
+
+## TODO Click on shop in menu
+zooms to marker and opens popup
+
+## TODO Click existing marker
+Opens popup showing name and price
+button to edit name and price
+button to delete
+
+## TODO Routing
+Some A to B experiments
+add nav button to side bar items and markers
+nave from home to marker!!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Original README below
+
 *Psst — looking for a more complete solution? Check out [SvelteKit](https://kit.svelte.dev), the official framework for building web applications of all sizes, with a beautiful development experience and flexible filesystem-based routing.*
 
 *Looking for a shareable component template instead? You can [use SvelteKit for that as well](https://kit.svelte.dev/docs#packaging) or the older [sveltejs/component-template](https://github.com/sveltejs/component-template)*

@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import type { Shop } from "../Interfaces";
-
+  
   export let shops: Shop[];
+  
+  const MAP_LONGPRESS_MS = 666;
 
-  console.log('shops', shops);
+  const dispatch = createEventDispatcher();
 
+  // required for Leaflet init
   const config = {
       mapbox: {
           accessToken: 'pk.eyJ1IjoiZnVuYW5kY29vbGd1eSIsImEiOiJjbDJyYWh2ZzYzMXNoM2lwOWhudGQ1NGpnIn0.PG_RcxkH973h1MEirqweDg'
@@ -15,12 +18,17 @@
       }
   };
 
+  // required to access window objects
   onMount(() => {
 
     const addMarker = (shop: Shop) => {
       const { lat, lng } = shop.location;
       //@ts-ignore
-      return L.marker([lat, lng]).addTo(map);
+      const marker = L.marker([lat, lng]).addTo(map);
+      marker.on('click', (e) => {
+        dispatch('markerClick', e);
+      });
+      return marker;
     }
 
     //@ts-ignore  
@@ -40,6 +48,27 @@
     shops.forEach((shop: Shop) => {
       addMarker(shop);
     });
+
+    //@ts-ignore
+    map.on('click', (e) => {
+      dispatch('mapClick', e);
+    })
+
+    let mouseDownTimeout: NodeJS.Timeout;
+    //@ts-ignore
+    map.on('mousedown', (e) => {
+      mouseDownTimeout = setTimeout(() => {
+        dispatch('mapLongPress', e);
+      }, MAP_LONGPRESS_MS);
+    })
+    //@ts-ignore
+    map.on('mouseup', (e) => {
+      clearTimeout(mouseDownTimeout);
+    })
+    //@ts-ignore
+    map.on('mousemove', (e) => {
+      clearTimeout(mouseDownTimeout);
+    })
 
   })
 

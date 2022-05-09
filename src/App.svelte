@@ -2,9 +2,16 @@
 	import LeafletMap from "./Components/LeafletMap.svelte";
 	import List from "./Components/List.svelte";
 	import type { Shop } from "./Interfaces";
+import { HomeLocation } from "./Stores/HomeLocation";
 	import { ShopStore } from "./Stores/ShopStore";
 
 	let shops = $ShopStore;
+	let homeLocation = $HomeLocation;
+
+	const setHomeLocation = (leafletEvent) => {
+		const { lat, lng } = leafletEvent.latlng;
+		HomeLocation.set({ lat, lng });
+	}
 
 	const addButtonClick = (e) => {
 
@@ -19,15 +26,55 @@
 		shops = newShopList;
 	}
 
+	let longPressPendingRelease = false;
+	const mapLongPress = (e) => {
+		const leafletEvent = e.detail;
+		console.log('map long-clicked', e, leafletEvent)
+		longPressPendingRelease = true;
+
+		if(confirm('Set this location as home?')){
+			setHomeLocation(leafletEvent);
+			console.log(homeLocation);
+		}
+
+	}
+	const mapClicked = (e) => {
+		if(longPressPendingRelease){
+			longPressPendingRelease = false;
+			return;
+		}
+		const leafletEvent = e.detail;
+		console.log('map clicked', e, leafletEvent)
+	}
+	const markerClicked = (e) => {
+		const leafletEvent = e.detail;
+		console.log('marker clicked', e, leafletEvent)
+	}
+
 </script>
 
 <main>
-	<div class="left">
+	<div class="left wireframe">
+
+		<div class="home-location">
+			<h2>Home Location</h2>
+			<div class="lat">{$HomeLocation.lat.toFixed(4)}</div>
+			<div class="lng">{$HomeLocation.lng.toFixed(4)}</div>
+		</div>
+		
 		<List shops={shops} />
 		<button on:click={addButtonClick}>Add</button>
+
+		
+
 	</div>
 	<div class="right">
-		<LeafletMap shops={shops}/>
+		<LeafletMap
+		 	shops={shops}
+			on:mapClick={mapClicked}
+			on:mapLongPress={mapLongPress}
+			on:markerClick={markerClicked}
+		/>
 	</div>
 </main>
 
@@ -44,10 +91,18 @@
 	.left{
 		min-width: 300px;
 		overflow-y: scroll;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+
 	}
 
 	.right{
 		flex-grow: 1;
+		display: flex;
+	}
+
+	.home-location{
 		display: flex;
 	}
 
