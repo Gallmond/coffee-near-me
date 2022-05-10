@@ -1,32 +1,46 @@
 <script lang="ts">
+	// interfaces
+	import type { Shop, Coord } from "./Interfaces";
+	
+	// stores
+	import { HomeLocation } from "./Stores/HomeLocation";
+	import { ShopStore } from "./Stores/ShopStore";
+	
+	// components
 	import LeafletMap from "./Components/LeafletMap.svelte";
 	import List from "./Components/List.svelte";
-	import type { Shop } from "./Interfaces";
-import { HomeLocation } from "./Stores/HomeLocation";
-	import { ShopStore } from "./Stores/ShopStore";
+	import TransparentOverlay from "./Components/TransparentOverlay.svelte";
+	import NewMarkerPopup from "./Components/NewMarkerPopup.svelte";
 
-	import { distanceBetween } from "./Helpers/GeoLocation";
-import TransparentOverlay from "./Components/TransparentOverlay.svelte";
 
-	let shops = $ShopStore;
 	let homeLocation = $HomeLocation;
+	
+	// show/hide the transparent overlay
+	let overlayVisible = false;
+
+	// shop input fields
+	let lastClickedCoord: Coord = { lat: 0, lng: 0 };
+	let newShopName = '';
+	let newShopDesc = 'A new shop';
+	let newShopPrice = 0;
+
+	const addNewShop = (coord: Coord) => {
+
+		let newShop: Shop = {
+			name: newShopName,
+			description: newShopDesc,
+			priceInPence: newShopPrice,
+			location: coord,
+		}
+
+		const existingShops = $ShopStore;
+		existingShops.push(newShop);
+		ShopStore.set(existingShops) 
+	}
 
 	const setHomeLocation = (leafletEvent) => {
 		const { lat, lng } = leafletEvent.latlng;
 		HomeLocation.set({ lat, lng });
-	}
-
-	const addButtonClick = (e) => {
-
-		let newShops = [];
-		for(var i = 0, l = 5; i < l; i++){
-			newShops.push({ name: `shop ${(shops.length + 1)}`, distanceInMetres: 999, priceInPence: 888 })
-		}
-
-		let newShopList = [...$ShopStore, ...newShops]
-
-		ShopStore.set(newShopList)
-		shops = newShopList;
 	}
 
 	let longPressPendingRelease = false;
@@ -48,22 +62,42 @@ import TransparentOverlay from "./Components/TransparentOverlay.svelte";
 		}
 		const leafletEvent = e.detail;
 		console.log('map clicked', e, leafletEvent)
+
+		// set location 
+		lastClickedCoord = { lat: leafletEvent.latlng.lat, lng: leafletEvent.latlng.lng };
+
+		// prompt user for new marker info
+		overlayVisible = true;
+		console.log('overlayVisible', overlayVisible);
 	}
 	const markerClicked = (e) => {
 		const leafletEvent = e.detail;
 		console.log('marker clicked', e, leafletEvent)
 	}
 
+	const addClicked = (e) => {
+		console.log('addClicked', e);
+		addNewShop(lastClickedCoord);
+	}
+	const cancelClicked = (e) => {
+		console.log('cancelClicked', e);
+		overlayVisible = false;
+	}
+
+
+
 </script>
 
 <main>
 
-	<TransparentOverlay visible={true}>
-		<div class="new-marker-prompt-container">
-			<!-- TODO continue with this -->
-			<h1>test</h1>
-			<p>some text</p>
-		</div>
+	<TransparentOverlay visible={overlayVisible}>
+		<NewMarkerPopup
+			newShopName={newShopName}
+			newShopDesc={newShopDesc}
+			newShopPrice={newShopPrice}
+			add={addClicked}
+			cancel={cancelClicked}
+		/>
 	</TransparentOverlay>
 	
 
@@ -77,14 +111,13 @@ import TransparentOverlay from "./Components/TransparentOverlay.svelte";
 		</div>
 		
 		<div class="list-container">
-			<List shops={shops} />
-			<button on:click={addButtonClick}>Add</button>
+			<List shops={$ShopStore} />
 		</div>
 
 	</div>
 	<div class="right">
 		<LeafletMap
-		 	shops={shops}
+		 	shops={$ShopStore}
 			on:mapClick={mapClicked}
 			on:mapLongPress={mapLongPress}
 			on:markerClick={markerClicked}
@@ -93,9 +126,6 @@ import TransparentOverlay from "./Components/TransparentOverlay.svelte";
 </main>
 
 <style>
-
-	
-
 	main{
 		display: flex;
 		flex-direction: row;
@@ -133,13 +163,4 @@ import TransparentOverlay from "./Components/TransparentOverlay.svelte";
 		font-size: 0.8rem;
     opacity: 0.7;
 	}
-	
-	.new-marker-prompt-container{
-		background-color: white;
-		border: 1px solid black;
-		width: fit-content;
-		margin: auto;
-	}
-
-
 </style>

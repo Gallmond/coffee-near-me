@@ -1,19 +1,23 @@
 # Things to do
 
-## TODO Set home location
-Click and hold to prompt set home location.
-Display on side bar (tidy this).
-Recalculate shop distances.
+## Set home location
+x Click and hold to prompt set home location.
+x Display on side bar (tidy this).
+x Recalculate shop distances.
 
 ## TODO New markers on map clicks
-Click on map to prompt to add a new marker
-takes name and price
+x Click on map to prompt to add a new marker
+x takes name, desc, price
+cannot submit without a name and a price
+add button adds to the list and drops a marker
+cancel button closes the prompt
 
 ## TODO Click on shop in menu
 zooms to marker and opens popup
+popup displays name, desc, price
 
 ## TODO Click existing marker
-Opens popup showing name and price
+popup displays name, desc, price
 button to edit name and price
 button to delete
 

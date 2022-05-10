@@ -10,6 +10,10 @@ interface Shop{
   location: Coord;
 }
 
+type ValidIfFunction = (value: string|number) => boolean;
+
 export type{
-  Shop
+  Coord,
+  Shop,
+  ValidIfFunction
 }
