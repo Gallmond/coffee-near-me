@@ -7,7 +7,6 @@ interface Shop{
   name: string;
   description?: string;
   priceInPence: number;
-  distanceInMetres: number;
   location: Coord;
 }
 

@@ -5,6 +5,9 @@
 import { HomeLocation } from "./Stores/HomeLocation";
 	import { ShopStore } from "./Stores/ShopStore";
 
+	import { distanceBetween } from "./Helpers/GeoLocation";
+import TransparentOverlay from "./Components/TransparentOverlay.svelte";
+
 	let shops = $ShopStore;
 	let homeLocation = $HomeLocation;
 
@@ -54,18 +57,29 @@ import { HomeLocation } from "./Stores/HomeLocation";
 </script>
 
 <main>
-	<div class="left wireframe">
+
+	<TransparentOverlay visible={true}>
+		<div class="new-marker-prompt-container">
+			<!-- TODO continue with this -->
+			<h1>test</h1>
+			<p>some text</p>
+		</div>
+	</TransparentOverlay>
+	
+
+	<div class="left">
 
 		<div class="home-location">
-			<h2>Home Location</h2>
-			<div class="lat">{$HomeLocation.lat.toFixed(4)}</div>
-			<div class="lng">{$HomeLocation.lng.toFixed(4)}</div>
+			<div class="title">
+				Home Location
+			</div>
+			<div class="latlng">{$HomeLocation.lat.toFixed(4)}, {$HomeLocation.lng.toFixed(4)}</div>
 		</div>
 		
-		<List shops={shops} />
-		<button on:click={addButtonClick}>Add</button>
-
-		
+		<div class="list-container">
+			<List shops={shops} />
+			<button on:click={addButtonClick}>Add</button>
+		</div>
 
 	</div>
 	<div class="right">
@@ -90,11 +104,8 @@ import { HomeLocation } from "./Stores/HomeLocation";
 	
 	.left{
 		min-width: 300px;
-		overflow-y: scroll;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
-
 	}
 
 	.right{
@@ -102,8 +113,33 @@ import { HomeLocation } from "./Stores/HomeLocation";
 		display: flex;
 	}
 
-	.home-location{
+	.list-container{
 		display: flex;
+		flex-direction: column;
+		margin-top: 20px;
+		overflow-y: scroll;
 	}
+
+	.home-location{
+		padding: 5px;
+		display: flex;
+		flex-direction: column;
+	}
+	.title{
+		font-size: 1.2rem;
+    font-weight: bold;
+	}
+	.latlng{
+		font-size: 0.8rem;
+    opacity: 0.7;
+	}
+	
+	.new-marker-prompt-container{
+		background-color: white;
+		border: 1px solid black;
+		width: fit-content;
+		margin: auto;
+	}
+
 
 </style>

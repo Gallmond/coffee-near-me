@@ -1,13 +1,21 @@
 <script lang="ts">
+  import { distanceBetweenKM } from "../Helpers/GeoLocation";
   import type { Shop } from "../Interfaces";
+  import { HomeLocation } from "../Stores/HomeLocation";
 
-  export let shop: Shop;
+  export let shop;
+
+  $: thisShopDistance = distanceBetweenKM(
+    [$HomeLocation.lat, $HomeLocation.lng],
+    [shop.location.lat, shop.location.lng]
+  );
+  
 </script>
 
 <div class="shop-card">
   <div class="left">
     <div class="title">{shop.name}</div>
-    <div class="distance">{shop.distanceInMetres}m</div>
+    <div class="distance">{thisShopDistance.toFixed(2)}km</div>
   </div>
   <div class="right">£{(shop.priceInPence/100).toFixed(2)}</div>
 </div>
