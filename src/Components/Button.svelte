@@ -1,22 +1,33 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-import type { ValidIfFunction } from "../Interfaces";
   const dispatch = createEventDispatcher();
   export let text = 'button';
   export let disabled = false;
 
-  let disableClass = disabled
+  $: disableClass = disabled
     ? 'disabled'
     : '';
 </script>
 
 <div class="container">
-  <div class="button {disableClass}" on:click={(e)=>{
+
+  {#if disabled}
+
+  <div class="button disabled">
+    <div class="text">{text}</div>
+  </div>
+
+  {:else}
+
+  <div class="button" on:click={(e)=>{
       if(disabled) return;
       dispatch('click', e)
     }}>
     <div class="text">{text}</div>
   </div>
+
+  {/if}
+  
 </div>
 
 <style>

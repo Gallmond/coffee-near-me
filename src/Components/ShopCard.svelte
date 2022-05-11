@@ -1,9 +1,14 @@
 <script lang="ts">
+  // Cannot find module '../Stores/HomeLocation' or its corresponding type declarations.ts(2307)
+  import { HomeLocation } from "../Stores/HomeLocation"; 
+  import { ShopStore } from "../Stores/ShopStore";
+
   import { distanceBetweenKM } from "../Helpers/GeoLocation";
   import type { Shop } from "../Interfaces";
-  import { HomeLocation } from "../Stores/HomeLocation";
 
-  export let shop;
+  export let shop: Shop;
+
+  let temp = $ShopStore;
 
   $: thisShopDistance = distanceBetweenKM(
     [$HomeLocation.lat, $HomeLocation.lng],
@@ -12,12 +17,12 @@
   
 </script>
 
-<div class="shop-card">
+<div class="shop-card" title="{shop.description}">
   <div class="left">
     <div class="title">{shop.name}</div>
     <div class="distance">{thisShopDistance.toFixed(2)}km</div>
   </div>
-  <div class="right">£{(shop.priceInPence/100).toFixed(2)}</div>
+  <div class="right">£{shop.price.toFixed(2)}</div>
 </div>
 
 <style>

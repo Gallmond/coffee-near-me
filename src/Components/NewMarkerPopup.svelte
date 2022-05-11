@@ -1,16 +1,30 @@
 <script lang="ts">
   import TextInput from './TextInput.svelte';
-  import NumerInput from './NumerInput.svelte';
+  import NumberInput from './NumberInput.svelte';
   import Button from './Button.svelte';
 
   import isValid from './../Helpers/ValidityChecks';
   
   export let newShopName = '';
-  export let newShopDesc = 'A new shop';
-  export let newShopPrice = 1.23;
+  export let newShopDesc = '';
+  export let newShopPrice: string|number = ''
 
   export let add: (e: Event) => void;
   export let cancel: (e: Event) => void;
+
+  let textValid = false, priceValid = false;
+
+  // can this form be submitted
+  $:canSubmit = isValid.text(newShopName)
+    && isValid.text(newShopDesc)
+    && isValid.floatOverZero(parseFloat(newShopPrice.toString())); 
+
+  export const clearFields = () => {
+    newShopName = '';
+    newShopDesc = '';
+    newShopPrice = '';
+  }
+
 </script>
 
 <div class="new-marker-prompt-container">
@@ -24,14 +38,14 @@
     bind:value={newShopDesc}
     validIf={isValid.text}
   />
-  <NumerInput label="A flat white costs" placeholder="1.23"
+  <NumberInput label="A flat white costs" placeholder="1.23"
     bind:value={newShopPrice}
     validIf={isValid.floatOverZero}
   />
 
   <div class="buttons">
     <!-- TODO hook up this disabled bool to the inputs above -->
-    <Button text="add" on:click={add} disabled={true}/>
+    <Button text="add" on:click={add} disabled={!canSubmit} />
     <Button text="cancel" on:click={cancel} />
   </div>
 </div>

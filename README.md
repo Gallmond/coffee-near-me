@@ -8,9 +8,9 @@ x Recalculate shop distances.
 ## TODO New markers on map clicks
 x Click on map to prompt to add a new marker
 x takes name, desc, price
-cannot submit without a name and a price
-add button adds to the list and drops a marker
-cancel button closes the prompt
+// TODO cannot submit without a name and a price
+// TODO add button adds to the list and drops a marker
+// TODO cancel button closes the prompt
 
 ## TODO Click on shop in menu
 zooms to marker and opens popup

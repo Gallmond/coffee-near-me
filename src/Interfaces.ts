@@ -6,7 +6,7 @@ interface Coord{
 interface Shop{
   name: string;
   description?: string;
-  priceInPence: number;
+  price: number; // in pounds
   location: Coord;
 }
 

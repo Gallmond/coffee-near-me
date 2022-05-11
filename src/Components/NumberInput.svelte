@@ -3,7 +3,7 @@
   import type { ValidIfFunction } from "../Interfaces";
   
   export let placeholder = '';
-  export let value: number;
+  export let value: string|number = '';
   export let label = '';
   const id = 'id-' + Math.random().toString(36).substring(2, 5);
 
