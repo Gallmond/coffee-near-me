@@ -13,6 +13,9 @@
 	import NewMarkerPopup from "./Components/NewMarkerPopup.svelte";
 	import HomeLocationListItem from "./Components/HomeLocationListItem.svelte";
 
+	// bound component variables
+	let leafletMap: LeafletMap;
+
 	// show/hide the transparent overlay
 	let overlayVisible = false;
 	let newMarkerPopup: NewMarkerPopup;
@@ -88,6 +91,8 @@
 	}
 	const markerClicked = (e) => {
 		console.log('marker clicked', e, e.detail)
+		let leafletMouseEvent: L.LeafletMouseEvent = e.detail;
+		leafletMap.flyTo({lat: leafletMouseEvent.latlng.lat, lng: leafletMouseEvent.latlng.lng});
 	}
 
 	/**
@@ -108,6 +113,12 @@
 		overlayVisible = false;
 	}
 
+	const itemClicked = (e) => {
+		console.log('itemClicked', e);
+		const thisShop: Shop = e.detail;
+		leafletMap.flyTo(thisShop.location)
+	}
+
 </script>
 
 <main>
@@ -126,12 +137,13 @@
 	<div class="left">
 		<HomeLocationListItem />
 		<div class="list-container">
-			<List shops={$ShopStore} />
+			<List shops={$ShopStore} on:shopClick={itemClicked} />
 		</div>
 	</div>
 
 	<div class="right">
 		<LeafletMap
+			bind:this={leafletMap}
 		 	shops={$ShopStore}
 			on:mapClick={mapClicked}
 			on:mapLongPress={mapLongPress}

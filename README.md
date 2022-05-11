@@ -13,9 +13,9 @@ x add button adds to the list and drops a marker
 x cancel button closes the prompt
 
 ## TODO Click on shop in menu
-// todo zooms to marker
-// opens popup with info
-// popup displays name, desc, price
+x zooms to marker
+// TODO opens popup with info
+// TODO popup displays name, desc, price
 
 ## TODO Click existing marker
 popup displays name, desc, price

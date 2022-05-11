@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from "svelte";
-  import type { MarkerObjectsStore, Shop } from "../Interfaces";
+  import type { MarkerObjectsStore, Shop, Coord } from "../Interfaces";
   import type { Map, Marker } from "leaflet";
 
   const MAP_LONGPRESS_MS = 666;
@@ -13,6 +13,11 @@
   
   let existingMarkers: MarkerObjectsStore = {};
   
+  export const flyTo = (coord: Coord) => {
+    if(map === undefined) return;
+    map.flyTo([coord.lat, coord.lng], 17);
+  }
+
   const addShopToMarkersList = (shop:Shop): Marker|undefined => {
     //@ts-ignore
     if(L === undefined) return;
@@ -28,7 +33,9 @@
 
     //@ts-ignore
     existingMarkers[pretendId] = L.marker([shop.location.lat, shop.location.lng]);
-    existingMarkers[pretendId].on('click', (e) => {dispatch('markerClick', e)});
+    existingMarkers[pretendId].on('click', (e: L.LeafletMouseEvent) => {
+      dispatch('markerClick', e)
+    });
     existingMarkers[pretendId].addTo(map);
     
     // reassign to update

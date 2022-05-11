@@ -1,15 +1,18 @@
 <script lang="ts">
-  // Cannot find module '../Stores/HomeLocation' or its corresponding type declarations.ts(2307)
   import { HomeLocation } from "../Stores/HomeLocation"; 
-  import { ShopStore } from "../Stores/ShopStore";
-
+  import { createEventDispatcher } from "svelte";
   import { distanceBetweenKM } from "../Helpers/GeoLocation";
   import type { Shop } from "../Interfaces";
 
+  const dispatch = createEventDispatcher();
+
   export let shop: Shop;
 
-  let temp = $ShopStore;
+  const onClick = (e) => {
+    dispatch("shopClick", shop);
+  }
 
+  // recalculate distance if HomeLocation changes.
   $: thisShopDistance = distanceBetweenKM(
     [$HomeLocation.lat, $HomeLocation.lng],
     [shop.location.lat, shop.location.lng]
@@ -17,7 +20,7 @@
   
 </script>
 
-<div class="shop-card" title="{shop.description}">
+<div class="shop-card" title="{shop.description}" on:click={onClick}>
   <div class="left">
     <div class="title">{shop.name}</div>
     <div class="distance">{thisShopDistance.toFixed(2)}km</div>
