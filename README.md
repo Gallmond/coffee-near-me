@@ -5,16 +5,17 @@ x Click and hold to prompt set home location.
 x Display on side bar (tidy this).
 x Recalculate shop distances.
 
-## TODO New markers on map clicks
+## New markers on map clicks
 x Click on map to prompt to add a new marker
 x takes name, desc, price
-// TODO cannot submit without a name and a price
-// TODO add button adds to the list and drops a marker
-// TODO cancel button closes the prompt
+x cannot submit without a name and a price
+x add button adds to the list and drops a marker
+x cancel button closes the prompt
 
 ## TODO Click on shop in menu
-zooms to marker and opens popup
-popup displays name, desc, price
+// todo zooms to marker
+// opens popup with info
+// popup displays name, desc, price
 
 ## TODO Click existing marker
 popup displays name, desc, price
@@ -26,6 +27,8 @@ Some A to B experiments
 add nav button to side bar items and markers
 nave from home to marker!!!
 
+## TODO Quality Of Life
+The new marker form should be submitted on enter press, and closed on esc press
 
 
 

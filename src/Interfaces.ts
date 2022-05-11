@@ -1,3 +1,5 @@
+import type { Marker } from "leaflet";
+
 interface Coord{
   lat: number;
   lng: number;
@@ -10,10 +12,15 @@ interface Shop{
   location: Coord;
 }
 
+interface MarkerObjectsStore{
+  [key: string]: Marker;
+}
+
 type ValidIfFunction = (value: string|number) => boolean;
 
 export type{
   Coord,
   Shop,
-  ValidIfFunction
+  ValidIfFunction,
+  MarkerObjectsStore
 }

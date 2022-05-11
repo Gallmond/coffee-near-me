@@ -17,7 +17,7 @@
   // can this form be submitted
   $:canSubmit = isValid.text(newShopName)
     && isValid.text(newShopDesc)
-    && isValid.floatOverZero(parseFloat(newShopPrice.toString())); 
+    && isValid.floatOverZero(parseFloat(newShopPrice !== null ? newShopPrice.toString() : '0')); 
 
   export const clearFields = () => {
     newShopName = '';

@@ -25,6 +25,7 @@
     "typescript": "^4.0.0"
   },
   "dependencies": {
+    "@types/leaflet": "^1.7.9",
     "sirv-cli": "^2.0.0"
   }
 }

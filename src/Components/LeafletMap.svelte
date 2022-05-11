@@ -1,12 +1,41 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from "svelte";
-  import type { Shop } from "../Interfaces";
-  
-  export let shops: Shop[];
-  
+  import type { MarkerObjectsStore, Shop } from "../Interfaces";
+  import type { Map, Marker } from "leaflet";
+
   const MAP_LONGPRESS_MS = 666;
 
+  export let shops: Shop[];
+  let map: Map;
+
   const dispatch = createEventDispatcher();
+
+  
+  let existingMarkers: MarkerObjectsStore = {};
+  
+  const addShopToMarkersList = (shop:Shop): Marker|undefined => {
+    //@ts-ignore
+    if(L === undefined) return;
+
+    let pretendId = `${shop.location.lat}-${shop.location.lng}`;
+
+    // If we already have a marker for this shop, do nothing
+    if (existingMarkers[pretendId]) {
+      return existingMarkers[pretendId];
+    }
+
+    // create one
+
+    //@ts-ignore
+    existingMarkers[pretendId] = L.marker([shop.location.lat, shop.location.lng]);
+    existingMarkers[pretendId].on('click', (e) => {dispatch('markerClick', e)});
+    existingMarkers[pretendId].addTo(map);
+    
+    // reassign to update
+    existingMarkers = existingMarkers;
+
+    return existingMarkers[pretendId];
+  }
 
   // required for Leaflet init
   const config = {
@@ -18,19 +47,15 @@
       }
   };
 
+  // watch for changes to shops to add markers to the Leaflet map.
+  $: {
+    if(map !== undefined){
+      shops.forEach(addShopToMarkersList)
+    }
+  }
+
   // required to access window objects
   onMount(() => {
-
-    const addMarker = (shop: Shop) => {
-      const { lat, lng } = shop.location;
-      //@ts-ignore
-      const marker = L.marker([lat, lng]).addTo(map);
-      marker.on('click', (e) => {
-        dispatch('markerClick', e);
-      });
-      return marker;
-    }
-
     //@ts-ignore  
     map = L.map('map').setView([51.465, -0.259], 18);
     // set tile layer
@@ -44,10 +69,6 @@
         accessToken: config.mapbox.accessToken
         //@ts-ignore
     }).addTo(map)
-
-    shops.forEach((shop: Shop) => {
-      addMarker(shop);
-    });
 
     //@ts-ignore
     map.on('click', (e) => {
@@ -71,10 +92,6 @@
     })
 
   })
-
-  // create map
-  
-
 </script>
 
 <div id="map"></div>
