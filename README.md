@@ -23,16 +23,17 @@
 - x Side bar has button to delete this shop
 - x And removes the marker
 
-## TODO Routing
-Some A to B experiments
-add nav button to side bar items and markers
-nave from home to marker!!!
-
 ## TODO Quality Of Life
 - New marker form should be more natural language, ie "A flat white costs `1.23` at `shop name` notes: `blah`"
 - The new marker form should be submitted on enter press, and closed on esc press
 - On load, the map should be zoomed out enough to contain all markers
 
+## TODO Routing
+Experiment with OpenRouteService https://openrouteservice.org/services/
+See polyline for drawing lines: https://leafletjs.com/reference.html#polyline
+Some A to B experiments
+add nav button to side bar items and markers
+nave from home to marker!!!
 
 
 
