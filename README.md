@@ -12,15 +12,16 @@ x cannot submit without a name and a price
 x add button adds to the list and drops a marker
 x cancel button closes the prompt
 
-## TODO Click on shop in menu
+## Click on shop in menu
 x zooms to marker
-// TODO opens popup with info
-// TODO popup displays name, desc, price
+x opens popup with info
+x popup displays name, desc, price
 
-## TODO Click existing marker
-popup displays name, desc, price
-button to edit name and price
-button to delete
+## Click existing marker
+x popup displays name, desc, price
+- TODO Side bar info has button to edit name, desc price
+- TODO Side bar has button to delete this shop
+- TODO And marker
 
 ## TODO Routing
 Some A to B experiments
@@ -28,8 +29,8 @@ add nav button to side bar items and markers
 nave from home to marker!!!
 
 ## TODO Quality Of Life
-The new marker form should be submitted on enter press, and closed on esc press
-
+- The new marker form should be submitted on enter press, and closed on esc press
+- On load, the map should be zoomed out enough to contain all markers
 
 
 

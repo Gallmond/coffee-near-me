@@ -12,6 +12,7 @@
 	import TransparentOverlay from "./Components/TransparentOverlay.svelte";
 	import NewMarkerPopup from "./Components/NewMarkerPopup.svelte";
 	import HomeLocationListItem from "./Components/HomeLocationListItem.svelte";
+import ShopInfo from "./Components/ShopInfo.svelte";
 
 	// bound component variables
 	let leafletMap: LeafletMap;
@@ -89,11 +90,7 @@
 		// show the overlay
 		overlayVisible = true;
 	}
-	const markerClicked = (e) => {
-		console.log('marker clicked', e, e.detail)
-		let leafletMouseEvent: L.LeafletMouseEvent = e.detail;
-		leafletMap.flyTo({lat: leafletMouseEvent.latlng.lat, lng: leafletMouseEvent.latlng.lng});
-	}
+
 
 	/**
 	 * Overlay add button clicked
@@ -113,11 +110,38 @@
 		overlayVisible = false;
 	}
 
+	const markerClicked = (e) => {
+		console.log('marker clicked', e, e.detail)
+		let leafletMouseEvent: L.LeafletMouseEvent = e.detail;
+		let {latlng} = leafletMouseEvent;
+
+		// fly to this marker
+		leafletMap.flyTo({lat: latlng.lat, lng: latlng.lng});
+
+		// get the lat-lng "id" and get the corrosponding shop
+		let markerPretendId = `${latlng.lat}-${latlng.lng}`;
+		let thisShop: Shop;
+		$ShopStore.forEach( shop => {
+			let pretendId = `${shop.location.lat}-${shop.location.lng}`;
+			if(pretendId === markerPretendId){
+				thisShop = shop
+			}
+		})
+
+		// open the shop info in the side bar
+		selectedShop = thisShop === selectedShop ? undefined : thisShop;
+	}
+
+	let selectedShop: Shop|undefined;
 	const itemClicked = (e) => {
 		console.log('itemClicked', e);
 		const thisShop: Shop = e.detail;
 		leafletMap.flyTo(thisShop.location)
+		selectedShop = thisShop === selectedShop ? undefined : thisShop;
 	}
+
+	//TEMP for testing
+	selectedShop = $ShopStore[0]
 
 </script>
 
@@ -139,6 +163,9 @@
 		<div class="list-container">
 			<List shops={$ShopStore} on:shopClick={itemClicked} />
 		</div>
+
+		<ShopInfo shop={selectedShop} />
+
 	</div>
 
 	<div class="right">
@@ -164,6 +191,7 @@
 		min-width: 300px;
 		display: flex;
 		flex-direction: column;
+		border-right: 5px solid black;
 	}
 
 	.right{

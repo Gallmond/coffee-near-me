@@ -65,3 +65,20 @@ button:focus {
 .wireframe{
 	border: 1px solid red;
 }
+
+/* Use for shop information consistency */
+.title-text{
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+.small-text{
+	font-size: 0.8rem;
+	opacity: 0.7;
+}
+.desc-text{
+	font-style: italic;
+	margin: 10px 0px;
+}
+.price-text{
+	font-weight: bold;
+}
