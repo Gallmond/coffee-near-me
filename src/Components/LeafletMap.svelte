@@ -18,28 +18,42 @@
     map.flyTo([coord.lat, coord.lng], 17);
   }
 
+  export const deleteShopMarker = (shop: Shop) => {
+    //@ts-ignore
+    if(L === undefined) return;
+
+    let pretendId = `${shop.location.lat}-${shop.location.lng}`;
+
+    const existingMarkerIds = Object.keys( existingMarkers );
+    for(var i = 0, l = existingMarkerIds.length; i < l; i++){
+      if(existingMarkerIds[i] === pretendId){
+        existingMarkers[ existingMarkerIds[i] ].removeFrom(map);  // remove marker from the map
+        delete existingMarkers[ existingMarkerIds[i] ];           // remove marker from the object store
+        break;                                                    // end the loop, should only be one
+      }
+    }
+
+    existingMarkers = existingMarkers;                            // reassign to update rendered markers
+  }
+
   const addShopToMarkersList = (shop:Shop): Marker|undefined => {
     //@ts-ignore
     if(L === undefined) return;
 
     let pretendId = `${shop.location.lat}-${shop.location.lng}`;
 
-    // If we already have a marker for this shop, do nothing
-    if (existingMarkers[pretendId]) {
+    if (existingMarkers[pretendId]) {     // If we already have a marker for this shop, do nothing
       return existingMarkers[pretendId];
     }
 
-    // create one
-
     //@ts-ignore
-    existingMarkers[pretendId] = L.marker([shop.location.lat, shop.location.lng]);
-    existingMarkers[pretendId].on('click', (e: L.LeafletMouseEvent) => {
+    existingMarkers[pretendId] = L.marker([shop.location.lat, shop.location.lng]);  // create a new marker
+    existingMarkers[pretendId].on('click', (e: L.LeafletMouseEvent) => {            // assign the markerClick event
       dispatch('markerClick', e)
     });
-    existingMarkers[pretendId].addTo(map);
+    existingMarkers[pretendId].addTo(map);                                          // put it on the map
     
-    // reassign to update
-    existingMarkers = existingMarkers;
+    existingMarkers = existingMarkers;  // reassign to update
 
     return existingMarkers[pretendId];
   }
@@ -54,10 +68,9 @@
       }
   };
 
-  // watch for changes to shops to add markers to the Leaflet map.
   $: {
     if(map !== undefined){
-      shops.forEach(addShopToMarkersList)
+      shops.forEach(addShopToMarkersList) // watch for changes to shops to add markers to the Leaflet map.
     }
   }
 
@@ -82,6 +95,7 @@
       dispatch('mapClick', e);
     })
 
+    // add a timeout debounce so we can use long press without firing click event after release
     let mouseDownTimeout: NodeJS.Timeout;
     //@ts-ignore
     map.on('mousedown', (e) => {

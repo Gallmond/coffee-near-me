@@ -3,23 +3,32 @@
   const dispatch = createEventDispatcher();
   export let text = 'button';
   export let disabled = false;
+  export let highlight: string|undefined = undefined;
 
-  $: disableClass = disabled
-    ? 'disabled'
-    : '';
+  let styles = {};
+  $: {
+    if(highlight!==undefined){
+      styles['background-color'] = highlight
+    }
+  }
+
+  $: cssVarStyles = Object.entries(styles)
+		.map(([key, value]) => `${key}:${value}`)
+		.join(';');
+
 </script>
 
 <div class="container">
 
   {#if disabled}
 
-  <div class="button disabled">
+  <div style="{cssVarStyles}" class="button disabled">
     <div class="text">{text}</div>
   </div>
 
   {:else}
 
-  <div class="button" on:click={(e)=>{
+  <div style="{cssVarStyles}" class="button" on:click={(e)=>{
       if(disabled) return;
       dispatch('click', e)
     }}>

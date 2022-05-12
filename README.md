@@ -1,27 +1,27 @@
 # Things to do
 
 ## Set home location
-x Click and hold to prompt set home location.
-x Display on side bar (tidy this).
-x Recalculate shop distances.
+- x Click and hold to prompt set home location.
+- x Display on side bar (tidy this).
+- x Recalculate shop distances.
 
 ## New markers on map clicks
-x Click on map to prompt to add a new marker
-x takes name, desc, price
-x cannot submit without a name and a price
-x add button adds to the list and drops a marker
-x cancel button closes the prompt
+- x Click on map to prompt to add a new marker
+- x takes name, desc, price
+- x cannot submit without a name and a price
+- x add button adds to the list and drops a marker
+- x cancel button closes the prompt
 
 ## Click on shop in menu
-x zooms to marker
-x opens popup with info
-x popup displays name, desc, price
+- x zooms to marker
+- x opens popup with info
+- x popup displays name, desc, price
 
 ## Click existing marker
-x popup displays name, desc, price
-- TODO Side bar info has button to edit name, desc price
-- TODO Side bar has button to delete this shop
-- TODO And marker
+- x Popup displays name, desc, price
+- x Side bar info has button to edit name, desc price
+- x Side bar has button to delete this shop
+- x And removes the marker
 
 ## TODO Routing
 Some A to B experiments
@@ -29,6 +29,7 @@ add nav button to side bar items and markers
 nave from home to marker!!!
 
 ## TODO Quality Of Life
+- New marker form should be more natural language, ie "A flat white costs `1.23` at `shop name` notes: `blah`"
 - The new marker form should be submitted on enter press, and closed on esc press
 - On load, the map should be zoomed out enough to contain all markers
 

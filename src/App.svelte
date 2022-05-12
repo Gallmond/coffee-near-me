@@ -82,7 +82,7 @@ import ShopInfo from "./Components/ShopInfo.svelte";
 			return;
 		}
 
-		const leafletEvent = e.detail;
+		const leafletEvent: L.LeafletMouseEvent = e.detail;
 
 		// set location 
 		lastClickedCoord = { lat: leafletEvent.latlng.lat, lng: leafletEvent.latlng.lng };
@@ -140,6 +140,16 @@ import ShopInfo from "./Components/ShopInfo.svelte";
 		selectedShop = thisShop === selectedShop ? undefined : thisShop;
 	}
 
+	const onShopUpdated = (e) => {
+		const updatedShop: Shop = e.detail;
+		ShopStore.set( $ShopStore );
+	}
+
+	const onShopDeleted = (e) => {
+		const deletedShop: Shop = e.detail;
+		leafletMap.deleteShopMarker(deletedShop);
+	}
+
 	//TEMP for testing
 	selectedShop = $ShopStore[0]
 
@@ -164,7 +174,11 @@ import ShopInfo from "./Components/ShopInfo.svelte";
 			<List shops={$ShopStore} on:shopClick={itemClicked} />
 		</div>
 
-		<ShopInfo shop={selectedShop} />
+		<ShopInfo
+			shop={selectedShop}
+			on:shopUpdated={onShopUpdated}
+			on:shopDeleted={onShopDeleted} 
+		/>
 
 	</div>
 
