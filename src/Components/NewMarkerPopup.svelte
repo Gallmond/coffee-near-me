@@ -4,6 +4,7 @@
   import Button from './Button.svelte';
 
   import isValid from './../Helpers/ValidityChecks';
+import { onMount } from 'svelte';
   
   export let newShopName = '';
   export let newShopDesc = '';
@@ -12,11 +13,8 @@
   export let add: (e: Event) => void;
   export let cancel: (e: Event) => void;
 
-  let textValid = false, priceValid = false;
-
   // can this form be submitted
   $:canSubmit = isValid.text(newShopName)
-    && isValid.text(newShopDesc)
     && isValid.floatOverZero(parseFloat(newShopPrice !== null ? newShopPrice.toString() : '0')); 
 
   export const clearFields = () => {
@@ -25,22 +23,35 @@
     newShopPrice = '';
   }
 
+  const onKeyDown = (e: KeyboardEvent) => {
+    if(e.key === 'Escape'){
+      cancel(e);
+    }
+
+    if (e.key === 'Enter') {
+      canSubmit && add(e);
+    }
+  }
+
+  onMount(() => {
+    document.addEventListener('keydown', onKeyDown);
+  });
+
 </script>
 
-<div class="new-marker-prompt-container">
-  <div class="title">Add Store</div>
-  <p class="description">Add a name and the price of a flat white below</p>
-  <TextInput label="Shop name" placeholder="shop name"
-    bind:value={newShopName}
-    validIf={isValid.text}
-  />
-  <TextInput label="Shop description" placeholder="A nice coffee shop"
-    bind:value={newShopDesc}
-    validIf={isValid.text}
-  />
+<div class="new-marker-prompt-container" >
   <NumberInput label="A flat white costs" placeholder="1.23"
     bind:value={newShopPrice}
     validIf={isValid.floatOverZero}
+  />
+
+  <TextInput label="At" placeholder="shop name"
+    bind:value={newShopName}
+    validIf={isValid.text}
+  />
+
+  <TextInput label="Notes?" placeholder="A nice coffee shop"
+    bind:value={newShopDesc}
   />
 
   <div class="buttons">

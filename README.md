@@ -23,10 +23,10 @@
 - x Side bar has button to delete this shop
 - x And removes the marker
 
-## TODO Quality Of Life
-- New marker form should be more natural language, ie "A flat white costs `1.23` at `shop name` notes: `blah`"
-- The new marker form should be submitted on enter press, and closed on esc press
-- On load, the map should be zoomed out enough to contain all markers
+##   Quality Of Life
+- x New marker form should be more natural language, ie "A flat white costs `1.23` at `shop name` notes: `blah`"
+- x The new marker form should be submitted on enter press, and closed on esc press
+- TODO On load, the map should be zoomed out enough to contain all markers
 
 ## TODO Routing
 Experiment with OpenRouteService https://openrouteservice.org/services/

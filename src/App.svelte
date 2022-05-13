@@ -151,7 +151,8 @@ import ShopInfo from "./Components/ShopInfo.svelte";
 	}
 
 	//TEMP for testing
-	selectedShop = $ShopStore[0]
+	// selectedShop = $ShopStore[0]
+	overlayVisible = true;
 
 </script>
 

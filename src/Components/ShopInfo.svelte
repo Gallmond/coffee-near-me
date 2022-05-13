@@ -67,22 +67,17 @@ import { ShopStore } from "../Stores/ShopStore";
 <div class="container wireframe">
 
   {#if editing}
-  <TextInput bind:value={shop.name} placeholder={shop.name} />
-  <div class="small-text">{shop.location.lat.toFixed(4)}, {shop.location.lng.toFixed(4)}</div>
-  <TextInput bind:value={shop.description} placeholder={shop.description} />
-  <NumberInput bind:value={shop.price} placeholder={`£${shop.price}`} />
-
-
+    <TextInput bind:value={shop.name} placeholder={shop.name ?? 'shop name'} />
+    <div class="small-text">{shop.location.lat.toFixed(4)}, {shop.location.lng.toFixed(4)}</div>
+    <TextInput bind:value={shop.description} placeholder={shop.description.length ? shop.description : 'description'} />
+    <NumberInput bind:value={shop.price} placeholder={`£${shop.price ?? 0}`} />
   {:else}
     <div class="title-text">{shop.name}</div>
     <div class="small-text">{shop.location.lat.toFixed(4)}, {shop.location.lng.toFixed(4)}</div>
-    
     {#if shop.description}
       <div class="desc-text">{shop.description}</div>
     {/if}
-
     <div class="price-text">£{shop.price.toFixed(2)}</div>
-
   {/if}
 
   <div class="buttons">
@@ -97,7 +92,7 @@ import { ShopStore } from "../Stores/ShopStore";
       highlight={deletePendingConfirm ? '#ce6688' : 'white'}
       text={deletePendingConfirm ? 'confirm' : 'delete'} 
       on:click={deleteButtonClicked}
-      />
+    />
   </div>
     
 
