@@ -3,7 +3,10 @@
   import type { MarkerObjectsStore, Shop, Coord } from "../Interfaces";
   import type { Map } from "leaflet";
   import MarkerHelpers from '../Helpers/MarkerHelpers'
+  import OSRHelper from "../Helpers/OSRHelper";
+  // import Openrouteservice from "../../public/js/ors-js-client";
   const { getMarkerBoundingBox } = MarkerHelpers;
+  const { getWalkingDirections } = OSRHelper;
 
   const MAP_LONGPRESS_MS = 666;
 
@@ -129,6 +132,19 @@
     map.on('mousemove', (e) => {
       clearTimeout(mouseDownTimeout);
     })
+
+    // OPENROUTESERVICE EXPERIMENT START
+    const start = [ 51.46505050391631, -0.2485207421687411];
+    const end = [ 51.46526069993964, -0.24381059989316992];
+
+    const startCoord = {
+      lat: start[0],
+      lng: start[1]
+    };
+    const endCoord = {
+      lat: end[0],
+      lng: end[1]
+    };
 
   })
 </script>

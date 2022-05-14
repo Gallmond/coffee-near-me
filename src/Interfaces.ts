@@ -1,9 +1,17 @@
 import type { Marker } from "leaflet";
 
+type Latitude = number;
+type Longitude = number;
+
 interface Coord{
-  lat: number;
-  lng: number;
+  lat: Latitude;
+  lng: Longitude;
 }
+
+/**
+ * lon, lat (yes this is correct)
+ */
+type ORSCoord = [Longitude, Latitude];
 
 interface Shop{
   name: string;
@@ -19,8 +27,11 @@ interface MarkerObjectsStore{
 type ValidIfFunction = (value: string|number) => boolean;
 
 export type{
+  Latitude,
+  Longitude,
+  ORSCoord,
   Coord,
   Shop,
   ValidIfFunction,
-  MarkerObjectsStore
+  MarkerObjectsStore,
 }
