@@ -26,7 +26,8 @@
 ##   Quality Of Life
 - x New marker form should be more natural language, ie "A flat white costs `1.23` at `shop name` notes: `blah`"
 - x The new marker form should be submitted on enter press, and closed on esc press
-- TODO On load, the map should be zoomed out enough to contain all markers
+- x On load, the map should be zoomed out enough to contain all markers
+  - x see fitBounds(<LatLngBounds> bounds, <fitBounds options> options?)
 
 ## TODO Routing
 Experiment with OpenRouteService https://openrouteservice.org/services/

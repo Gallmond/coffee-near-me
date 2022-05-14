@@ -1,7 +1,9 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from "svelte";
   import type { MarkerObjectsStore, Shop, Coord } from "../Interfaces";
-  import type { Map, Marker } from "leaflet";
+  import type { Map } from "leaflet";
+  import MarkerHelpers from '../Helpers/MarkerHelpers'
+  const { getMarkerBoundingBox } = MarkerHelpers;
 
   const MAP_LONGPRESS_MS = 666;
 
@@ -72,6 +74,22 @@
     if(map !== undefined){
       shops.forEach(addShopToMarkersList) // watch for changes to shops to add markers to the Leaflet map.
     }
+  }
+
+  
+
+  const fitBounds = () => {
+
+    const bounds = getMarkerBoundingBox( existingMarkers );
+    if(!bounds) return;
+
+    map.flyToBounds(bounds);
+  }
+
+  // when existingMarkers is reassigned, fitBounds will run
+  $:{
+    existingMarkers;
+    fitBounds();
   }
 
   // required to access window objects
