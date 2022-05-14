@@ -55,7 +55,6 @@ import { onMount } from 'svelte';
   />
 
   <div class="buttons">
-    <!-- TODO hook up this disabled bool to the inputs above -->
     <Button text="add" on:click={add} disabled={!canSubmit} />
     <Button text="cancel" on:click={cancel} />
   </div>

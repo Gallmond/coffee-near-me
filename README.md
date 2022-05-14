@@ -29,12 +29,22 @@
 - x On load, the map should be zoomed out enough to contain all markers
   - x see fitBounds(<LatLngBounds> bounds, <fitBounds options> options?)
 
-## TODO Routing
-Experiment with OpenRouteService https://openrouteservice.org/services/
-See polyline for drawing lines: https://leafletjs.com/reference.html#polyline
-Some A to B experiments
-add nav button to side bar items and markers
-nave from home to marker!!!
+## TODO Navigation
+- Add button in shop info "Navigate here"
+  - Just show line
+  - Optional text directions on the right side of the screen
+- Add some information on the page to indicate that the user can long-press to
+  set their home location
+- Update long press handler
+  - Open popup
+    - Set here ase home location?
+    - Use device location?
+
+## Notes & useful links
+
+Openrouteserivce: https://openrouteservice.org/services/
+
+Leaflet docs: https://leafletjs.com/reference.html
 
 
 
