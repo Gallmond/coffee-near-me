@@ -12,7 +12,10 @@
 	import TransparentOverlay from "./Components/TransparentOverlay.svelte";
 	import NewMarkerPopup from "./Components/NewMarkerPopup.svelte";
 	import HomeLocationListItem from "./Components/HomeLocationListItem.svelte";
-import ShopInfo from "./Components/ShopInfo.svelte";
+	import ShopInfo from "./Components/ShopInfo.svelte";
+
+	import ORSHelper from './Helpers/OSRHelper';
+	const { getWalkingDirections } = ORSHelper;
 
 	// bound component variables
 	let leafletMap: LeafletMap;
@@ -29,20 +32,15 @@ import ShopInfo from "./Components/ShopInfo.svelte";
 
 	/**
 	 * Adds a new shop to the ShopStore
-	 * 
-	 * @param coord the coordinate to set the home location to
 	 */
 	const addNewShop = () => {
-
-		let newShop: Shop = {
+		const existingShops = $ShopStore;
+		existingShops.push({
 			name: newShopName,
 			description: newShopDesc,
 			price: newShopPrice,
 			location: lastClickedCoord,
-		}
-
-		const existingShops = $ShopStore;
-		existingShops.push(newShop);
+		});
 		ShopStore.set(existingShops) 
 		console.log($ShopStore)
 	}
@@ -150,9 +148,47 @@ import ShopInfo from "./Components/ShopInfo.svelte";
 		leafletMap.deleteShopMarker(deletedShop);
 	}
 
+	const onNavigate = (e) => {
+		const shop: Shop = e.detail;
+		const from = $HomeLocation; 
+		const to = shop.location;
+
+		const directions = getWalkingDirections(from, to)
+
+		console.log('onNavigate', from, to);
+		
+
+		directions.then( (directions) => {
+
+			GeoJSONToMapDirections(directions);
+
+			console.log('directions', directions);
+		})
+
+
+	}
+
+	const GeoJSONToMapDirections = (GeoJSON) => {
+
+		// get the lines
+		const features = GeoJSON.features;
+		const latLonArray = [];
+		features.forEach( feature => {
+			const { geometry } = feature;
+			const { coordinates } = geometry;
+			coordinates.forEach( ([lon, lat]) => {
+				latLonArray.push([lat, lon]);
+			})
+		})
+
+		leafletMap.drawRoute(latLonArray);
+
+	}
+
+
 	//TEMP for testing
-	// selectedShop = $ShopStore[0]
-	overlayVisible = true;
+	selectedShop = $ShopStore[0]
+	// overlayVisible = true;
 
 </script>
 
@@ -179,6 +215,7 @@ import ShopInfo from "./Components/ShopInfo.svelte";
 			shop={selectedShop}
 			on:shopUpdated={onShopUpdated}
 			on:shopDeleted={onShopDeleted} 
+			on:navigateToShop={onNavigate}
 		/>
 
 	</div>

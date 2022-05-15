@@ -30,12 +30,12 @@
   - x see fitBounds(<LatLngBounds> bounds, <fitBounds options> options?)
 
 ## TODO Navigation
-- Add button in shop info "Navigate here"
-  - Just show line
-  - Optional text directions on the right side of the screen
-- Add some information on the page to indicate that the user can long-press to
+- TODO  Add button in shop info "Navigate here"
+  - x Just show line from current home location to the shop
+  - Optional text directions on the right side of the screen?
+- TODO Add some information on the page to indicate that the user can long-press to
   set their home location
-- Update long press handler
+- TODO Update long press handler
   - Open popup
     - Set here ase home location?
     - Use device location?

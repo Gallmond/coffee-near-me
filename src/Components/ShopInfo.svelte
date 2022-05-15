@@ -61,6 +61,11 @@ import { ShopStore } from "../Stores/ShopStore";
     shop = undefined;
   }
 
+  const navigateButtonClicked = () => {
+    console.log('navigateButtonClicked');
+    dispatch('navigateToShop', shop);
+  }
+
 </script>
 
 {#if shop !== undefined}
@@ -87,6 +92,11 @@ import { ShopStore } from "../Stores/ShopStore";
     {:else}
     <Button text=edit on:click={editButtonClicked} />
     {/if}
+
+    <Button 
+      text="Nav"
+      on:click={navigateButtonClicked}
+    />
 
     <Button 
       highlight={deletePendingConfirm ? '#ce6688' : 'white'}

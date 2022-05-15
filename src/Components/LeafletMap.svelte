@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from "svelte";
   import type { MarkerObjectsStore, Shop, Coord } from "../Interfaces";
-  import type { Map } from "leaflet";
+  import { Map, polyline, Polyline } from "leaflet";
   import MarkerHelpers from '../Helpers/MarkerHelpers'
   import OSRHelper from "../Helpers/OSRHelper";
+  import Application from "../Application";
   // import Openrouteservice from "../../public/js/ors-js-client";
   const { getMarkerBoundingBox } = MarkerHelpers;
-  const { getWalkingDirections } = OSRHelper;
-
+  
   const MAP_LONGPRESS_MS = 666;
 
   export let shops: Shop[];
@@ -17,15 +17,44 @@
 
   
   let existingMarkers: MarkerObjectsStore = {};
-  
+  let polyLines: Polyline[] = [];
+
+
   export const flyTo = (coord: Coord) => {
     if(map === undefined) return;
     map.flyTo([coord.lat, coord.lng], 17);
   }
 
-  export const deleteShopMarker = (shop: Shop) => {
+  /** Remove a specific polyLine */
+  const clearPolyLine = (_polyLine: Polyline) => {
+    const polyLine = polyLines.find(e => e === _polyLine);
+    polyLine && polyLine.remove();
+  }
+  /** Remove all current polyLines */
+  const clearPolyLines = () => {
+    polyLines.forEach( polyline => {
+      polyline.remove();
+    })
+  }
+
+  /** Just a wrapper for ts-ignore mess*/
+  const LEAFLET = () => {
     //@ts-ignore
-    if(L === undefined) return;
+    return L === undefined ? undefined : L;
+  }
+
+  export const drawRoute = (latLonArray: Array<[number,number]>) => {
+    if(LEAFLET() === undefined) return;
+
+    // clear any existing polylines
+    clearPolyLines();
+
+    const newPolyLine = LEAFLET().polyline(latLonArray, {color: 'red'}).addTo(map);
+    polyLines.push(newPolyLine);
+  }
+
+  export const deleteShopMarker = (shop: Shop) => {
+    if(LEAFLET() === undefined) return;
 
     let pretendId = `${shop.location.lat}-${shop.location.lng}`;
 
@@ -42,8 +71,7 @@
   }
 
   const addShopToMarkersList = (shop:Shop): Marker|undefined => {
-    //@ts-ignore
-    if(L === undefined) return;
+    if(LEAFLET() === undefined) return;
 
     let pretendId = `${shop.location.lat}-${shop.location.lng}`;
 
@@ -51,8 +79,7 @@
       return existingMarkers[pretendId];
     }
 
-    //@ts-ignore
-    existingMarkers[pretendId] = L.marker([shop.location.lat, shop.location.lng]);  // create a new marker
+    existingMarkers[pretendId] = LEAFLET().marker([shop.location.lat, shop.location.lng]);  // create a new marker
     existingMarkers[pretendId].on('click', (e: L.LeafletMouseEvent) => {            // assign the markerClick event
       dispatch('markerClick', e)
     });
@@ -63,23 +90,11 @@
     return existingMarkers[pretendId];
   }
 
-  // required for Leaflet init
-  const config = {
-      mapbox: {
-          accessToken: 'pk.eyJ1IjoiZnVuYW5kY29vbGd1eSIsImEiOiJjbDJyYWh2ZzYzMXNoM2lwOWhudGQ1NGpnIn0.PG_RcxkH973h1MEirqweDg'
-      },
-      coords: {
-          start: [51.465, -0.259]
-      }
-  };
-
   $: {
     if(map !== undefined){
       shops.forEach(addShopToMarkersList) // watch for changes to shops to add markers to the Leaflet map.
     }
   }
-
-  
 
   const fitBounds = () => {
 
@@ -97,38 +112,36 @@
 
   // required to access window objects
   onMount(() => {
-    //@ts-ignore  
-    map = L.map('map').setView([51.465, -0.259], 18);
-    // set tile layer
-    //@ts-ignore
-    L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
-        id: 'mapbox/streets-v11',
-        tileSize: 512,
-        zoomOffset: -1,
-        accessToken: config.mapbox.accessToken
-        //@ts-ignore
-    }).addTo(map)
+    
+    const application = new Application({
+      debug: true,
+      startLocation: [51.465, -0.259],
+      mapBox: {
+          accessToken: 'pk.eyJ1IjoiZnVuYW5kY29vbGd1eSIsImEiOiJjbDJyYWh2ZzYzMXNoM2lwOWhudGQ1NGpnIn0.PG_RcxkH973h1MEirqweDg'
+      },
+    });
 
-    //@ts-ignore
-    map.on('click', (e) => {
+    application.setLeaflet( LEAFLET() )
+    map = application.createMap('map');
+
+    application.onClick((e) => {
       dispatch('mapClick', e);
     })
 
+    // map.on('click', (e) => {
+    //   dispatch('mapClick', e);
+    // })
+
     // add a timeout debounce so we can use long press without firing click event after release
     let mouseDownTimeout: NodeJS.Timeout;
-    //@ts-ignore
     map.on('mousedown', (e) => {
       mouseDownTimeout = setTimeout(() => {
         dispatch('mapLongPress', e);
       }, MAP_LONGPRESS_MS);
     })
-    //@ts-ignore
     map.on('mouseup', (e) => {
       clearTimeout(mouseDownTimeout);
     })
-    //@ts-ignore
     map.on('mousemove', (e) => {
       clearTimeout(mouseDownTimeout);
     })
