@@ -15,6 +15,8 @@
 	import ShopInfo from "./Components/ShopInfo.svelte";
 
 	import ORSHelper from './Helpers/OSRHelper';
+import TextDirections from "./Components/TextDirections.svelte";
+import GJ from "./Helpers/GeoJsonHelper";
 	const { getWalkingDirections } = ORSHelper;
 
 	// bound component variables
@@ -148,21 +150,26 @@
 		leafletMap.deleteShopMarker(deletedShop);
 	}
 
+	let directions = undefined;
+
 	const onNavigate = (e) => {
 		const shop: Shop = e.detail;
 		const from = $HomeLocation; 
 		const to = shop.location;
 
-		const directions = getWalkingDirections(from, to)
+		let directionsPromise = getWalkingDirections(from, to)
 
 		console.log('onNavigate', from, to);
 		
 
-		directions.then( (directions) => {
+		directionsPromise.then( (parsedDirections) => {
 
-			GeoJSONToMapDirections(directions);
+			GeoJSONToMapDirections(parsedDirections);
 
-			console.log('directions', directions);
+			//TODO this reassignment is not re-rending the TextDirections
+			console.log('setting directions to', parsedDirections);
+			directions = parsedDirections;
+
 		})
 
 
@@ -189,6 +196,7 @@
 	//TEMP for testing
 	selectedShop = $ShopStore[0]
 	// overlayVisible = true;
+	// let directions = JSON.parse("{\"type\":\"FeatureCollection\",\"features\":[{\"bbox\":[-0.266355,51.464658,-0.263254,51.46664],\"type\":\"Feature\",\"properties\":{\"segments\":[{\"distance\":398.5,\"duration\":286.9,\"steps\":[{\"distance\":52.8,\"duration\":38,\"type\":11,\"instruction\":\"Head north on Portman Avenue\",\"name\":\"Portman Avenue\",\"way_points\":[0,3]},{\"distance\":56.1,\"duration\":40.4,\"type\":0,\"instruction\":\"Turn left onto Vernon Road\",\"name\":\"Vernon Road\",\"way_points\":[3,7]},{\"distance\":212.9,\"duration\":153.3,\"type\":0,\"instruction\":\"Turn left onto Church Avenue\",\"name\":\"Church Avenue\",\"way_points\":[7,16]},{\"distance\":6.1,\"duration\":4.4,\"type\":4,\"instruction\":\"Turn slight left\",\"name\":\"-\",\"way_points\":[16,18]},{\"distance\":49.3,\"duration\":35.5,\"type\":1,\"instruction\":\"Turn right onto Upper Richmond Road West, A205\",\"name\":\"Upper Richmond Road West, A205\",\"way_points\":[18,19]},{\"distance\":17.4,\"duration\":12.6,\"type\":12,\"instruction\":\"Keep left onto Sheen Lane, B351\",\"name\":\"Sheen Lane, B351\",\"way_points\":[19,21]},{\"distance\":3.9,\"duration\":2.8,\"type\":2,\"instruction\":\"Turn sharp left onto Milestone Green\",\"name\":\"Milestone Green\",\"way_points\":[21,23]},{\"distance\":0,\"duration\":0,\"type\":10,\"instruction\":\"Arrive at Milestone Green, straight ahead\",\"name\":\"-\",\"way_points\":[23,23]}]}],\"summary\":{\"distance\":398.5,\"duration\":286.9},\"way_points\":[0,23]},\"geometry\":{\"coordinates\":[[-0.263254,51.466109],[-0.263298,51.466286],[-0.263443,51.466516],[-0.263471,51.466561],[-0.263868,51.466566],[-0.264035,51.466579],[-0.264144,51.46661],[-0.264259,51.46664],[-0.264342,51.466503],[-0.264485,51.466316],[-0.26455,51.466216],[-0.264934,51.46573],[-0.264912,51.465655],[-0.265058,51.465452],[-0.265192,51.465287],[-0.265265,51.4652],[-0.265494,51.464904],[-0.265492,51.464872],[-0.26549,51.464849],[-0.266197,51.464796],[-0.2663,51.464719],[-0.266355,51.464674],[-0.266315,51.464664],[-0.266322,51.464658]],\"type\":\"LineString\"}}],\"bbox\":[-0.266355,51.464658,-0.263254,51.46664],\"metadata\":{\"attribution\":\"openrouteservice.org | OpenStreetMap contributors\",\"service\":\"routing\",\"timestamp\":1652612048148,\"query\":{\"coordinates\":[[-0.2632856369018555,51.4661062340029],[-0.266316063542283,51.46465494328079]],\"profile\":\"foot-walking\",\"format\":\"json\"},\"engine\":{\"version\":\"6.7.0\",\"build_date\":\"2022-02-18T19:37:41Z\",\"graph_date\":\"2022-05-03T06:30:15Z\"}}}");
 
 </script>
 
@@ -228,6 +236,11 @@
 			on:mapLongPress={mapLongPress}
 			on:markerClick={markerClicked}
 		/>
+
+		{#if directions }
+			<TextDirections directions={directions} />
+		{/if}
+
 	</div>
 
 </main>
