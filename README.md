@@ -1,44 +1,22 @@
 # Things to do
 
-## Set home location
-- x Click and hold to prompt set home location.
-- x Display on side bar (tidy this).
-- x Recalculate shop distances.
-
-## New markers on map clicks
-- x Click on map to prompt to add a new marker
-- x takes name, desc, price
-- x cannot submit without a name and a price
-- x add button adds to the list and drops a marker
-- x cancel button closes the prompt
-
-## Click on shop in menu
-- x zooms to marker
-- x opens popup with info
-- x popup displays name, desc, price
-
-## Click existing marker
-- x Popup displays name, desc, price
-- x Side bar info has button to edit name, desc price
-- x Side bar has button to delete this shop
-- x And removes the marker
-
-##   Quality Of Life
-- x New marker form should be more natural language, ie "A flat white costs `1.23` at `shop name` notes: `blah`"
-- x The new marker form should be submitted on enter press, and closed on esc press
-- x On load, the map should be zoomed out enough to contain all markers
-  - x see fitBounds(<LatLngBounds> bounds, <fitBounds options> options?)
-
 ## TODO Navigation
-- TODO  Add button in shop info "Navigate here"
+- Add button in shop info "Navigate here"
   - x Just show line from current home location to the shop
-  - Optional text directions on the right side of the screen?
+  - x Optional text directions on the right side of the screen?
+  - x toggle to show/hide them
 - TODO Add some information on the page to indicate that the user can long-press to
   set their home location
 - TODO Update long press handler
   - Open popup
     - Set here ase home location?
     - Use device location?
+
+##   Quality Of Life
+- TODO the nav button shouldn't make duplicate API requests if the nav button is
+  clicked multiple times on the same point
+
+
 
 ## Notes & useful links
 

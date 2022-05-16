@@ -1,5 +1,8 @@
 <script lang="ts">
   import GJ from "../Helpers/GeoJsonHelper";
+  import Button from "./Button.svelte";
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
 
   export let directions;
 
@@ -14,6 +17,11 @@
 
 
 <div class="container">
+  <div class="button-container">
+    <div class="button">
+      <Button text=close on:click={()=>{ dispatch('close'); }} />
+    </div>
+  </div>
   {#each directionSteps as directionStep}
     <div class="step-container">
       <div>{directionStep.instruction}</div>
@@ -24,6 +32,16 @@
 
 
 <style>
+
+  .button-container {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .button{
+    margin-left: auto;
+  }
+
   .container{
     flex:1;
     display: flex;
