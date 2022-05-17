@@ -1,4 +1,4 @@
-import { MapOptions, map, LeafletEventHandlerFn, LeafletMouseEventHandlerFn } from "leaflet";
+import type { MapOptions, LeafletMouseEventHandlerFn } from "leaflet";
 import type { Coord, Latitude, Longitude, Shop } from "./Interfaces";
 
 interface MapBoxOptions {

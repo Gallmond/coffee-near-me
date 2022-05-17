@@ -1,16 +1,17 @@
 # Things to do
 
 ## TODO Navigation
-- Add button in shop info "Navigate here"
-  - x Just show line from current home location to the shop
-  - x Optional text directions on the right side of the screen?
-  - x toggle to show/hide them
-- TODO Add some information on the page to indicate that the user can long-press to
-  set their home location
 - TODO Update long press handler
   - Open popup
     - Set here ase home location?
     - Use device location?
+
+## TODO saving / loading
+- save to localStorage
+  - x shops
+  - x homelocation
+  - x if the splash screen is dismissed
+  - last X many directions
 
 ##   Quality Of Life
 - TODO the nav button shouldn't make duplicate API requests if the nav button is

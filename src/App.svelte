@@ -1,10 +1,17 @@
 <script lang="ts">
 	// interfaces
 	import type { Shop, Coord } from "./Interfaces";
-	
+
+	// helpers
+	import ORSHelper from './Helpers/OSRHelper';
+	const { getWalkingDirections } = ORSHelper;
+	import LocalStorageHelper from "./Helpers/LocalStorageHelper";
+	const {save, load} = LocalStorageHelper;
+
 	// stores
 	import { HomeLocation } from "./Stores/HomeLocation";
 	import { ShopStore } from "./Stores/ShopStore";
+	import { SplashOverlayVisible } from "./Stores/SplayOverlayVisble";
 	
 	// components
 	import LeafletMap from "./Components/LeafletMap.svelte";
@@ -13,18 +20,15 @@
 	import NewMarkerPopup from "./Components/NewMarkerPopup.svelte";
 	import HomeLocationListItem from "./Components/HomeLocationListItem.svelte";
 	import ShopInfo from "./Components/ShopInfo.svelte";
-
-	import ORSHelper from './Helpers/OSRHelper';
-import TextDirections from "./Components/TextDirections.svelte";
-import GJ from "./Helpers/GeoJsonHelper";
-import SplashInfo from "./Components/SplashInfo.svelte";
-	const { getWalkingDirections } = ORSHelper;
+	import TextDirections from "./Components/TextDirections.svelte";
+	import SplashInfo from "./Components/SplashInfo.svelte";
+	import { onMount } from "svelte";
 
 	// bound component variables
 	let leafletMap: LeafletMap;
 
 	// show/hide the transparent overlay
-	let splashOverlayVisible = true;
+	let splashOverlayVisible;
 	let newMarkerOverlayVisible = false;
 	let newMarkerPopup: NewMarkerPopup;
 
@@ -195,6 +199,58 @@ import SplashInfo from "./Components/SplashInfo.svelte";
 
 	}
 
+	let saveDebounceId: NodeJS.Timeout;
+	const saveDebounce = (key: string, value:any) => {
+		if(saveDebounceId){
+			clearTimeout(saveDebounceId);
+		}
+		saveDebounceId = setTimeout(() => {
+			save(key, value);
+		}, 5000);
+	}
+
+	// update the stores on changes
+	ShopStore.subscribe((shops) => {
+		saveDebounce('$ShopStore', shops)
+	});
+	HomeLocation.subscribe((homeLocation) => {
+		saveDebounce('$HomeLocation', homeLocation)
+	});
+	SplashOverlayVisible.subscribe((isVisible) => {
+		saveDebounce('$SplashOverlayVisible', isVisible)
+		splashOverlayVisible = isVisible;
+	});
+
+	onMount(()=>{
+		// load the stores
+
+		loadSavedData();
+		
+
+	})
+
+	/** Load data from localstorage into the Stores */
+	const loadSavedData = () => {
+		console.log('loadSavedData');
+		if(!window.localStorage){
+			throw new Error('loadSavedData called before window.localStorage is available');
+		}
+
+		const existingShopStore = load('$ShopStore');
+		const existingHomeLocation = load('$HomeLocation');
+		const existingSplashOverlayVisible = load('$SplashOverlayVisible');
+
+		if( existingShopStore !== null && typeof existingShopStore === 'object'){
+			ShopStore.set( existingShopStore )
+		} 
+		if( existingHomeLocation !== null && typeof existingHomeLocation === 'object'){
+			HomeLocation.set( existingHomeLocation )
+		} 
+		if( existingSplashOverlayVisible !== null && typeof existingSplashOverlayVisible === 'boolean'){
+			SplashOverlayVisible.set( existingSplashOverlayVisible )
+		}
+	}
+
 
 	//TEMP for testing
 	selectedShop = $ShopStore[0]
@@ -217,7 +273,7 @@ import SplashInfo from "./Components/SplashInfo.svelte";
 	</TransparentOverlay>
 
 	<TransparentOverlay visible={splashOverlayVisible}>
-		<SplashInfo on:close={()=>{ splashOverlayVisible = false; }}/>
+		<SplashInfo on:close={()=>{ SplashOverlayVisible.set(false) }}/>
 	</TransparentOverlay>
 
 	<div class="left">

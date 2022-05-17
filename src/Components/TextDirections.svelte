@@ -33,15 +33,6 @@
 
 <style>
 
-  .button-container {
-    display: flex;
-    align-items: flex-end;
-  }
-
-  .button{
-    margin-left: auto;
-  }
-
   .container{
     flex:1;
     display: flex;
@@ -49,6 +40,16 @@
     max-width: 300px;
     border-left: 5px solid black;
     padding: 5px;
+    overflow-y: scroll;
+  }
+
+  .button-container {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .button{
+    margin-left: auto;
   }
 
   .step-container{
