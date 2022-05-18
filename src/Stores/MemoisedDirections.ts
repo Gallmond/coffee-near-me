@@ -1,3 +1,22 @@
 import { Writable, writable } from "svelte/store";
 
-export const MemoisedDirections: Writable<{}>  = writable({});
+interface MemoisedDirections {
+  [key: string]: {
+    added: number;
+    json: any;
+  }
+}
+
+
+// store like
+/**
+ * {
+ *  "lat,lng": {
+ *    "stored": 12343425412,
+ *    "json": {oprseresponse}
+ *  }
+ * }
+ */
+
+
+export const MemoisedDirections: Writable<MemoisedDirections>  = writable({});

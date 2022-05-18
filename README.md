@@ -1,23 +1,8 @@
 # Things to do
-
-## TODO Navigation
-- TODO Update long press handler
-  - Open popup
-    - Set here ase home location?
-    - Use device location?
-
-## TODO saving / loading
-- save to localStorage
-  - x shops
-  - x homelocation
-  - x if the splash screen is dismissed
-  - last X many directions
-
-##   Quality Of Life
-- TODO the nav button shouldn't make duplicate API requests if the nav button is
-  clicked multiple times on the same point
-
-
+ 
+- Add a home icon
+- Where should Application go? Can't handle info from other panels if it lives
+  inside of LeafletMap.svelte
 
 ## Notes & useful links
 

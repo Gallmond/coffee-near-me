@@ -28,10 +28,7 @@
 
   {:else}
 
-  <div style="{cssVarStyles}" class="button" on:click={(e)=>{
-      if(disabled) return;
-      dispatch('click', e)
-    }}>
+  <div style="{cssVarStyles}" class="button" on:click={(e)=>{dispatch('click', e)}}>
     <div class="text">{text}</div>
   </div>
 

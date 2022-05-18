@@ -4,7 +4,9 @@
 
   export let shops: Shop[];
 
-  //the on:shopClick with no value just forwards it up
+  /**
+   * the on:shopClick with no value just forwards it up to the next component
+   */
 </script>
 
 <div class="container">
@@ -18,5 +20,4 @@
     display: flex;
     flex-direction: column;
   }
-
 </style>

@@ -57,7 +57,6 @@ import { ShopStore } from "../Stores/ShopStore";
     const allOtherShops = $ShopStore.filter( thisShop => !(thisShop === shop));
     ShopStore.set(allOtherShops);
     toggleDeletePendingConfirm(false);
-    dispatch('shopDeleted', shop);
     shop = undefined;
   }
 

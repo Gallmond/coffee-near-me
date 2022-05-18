@@ -1,11 +1,11 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import isValid from './../Helpers/ValidityChecks';
+  
   import TextInput from './TextInput.svelte';
   import NumberInput from './NumberInput.svelte';
   import Button from './Button.svelte';
 
-  import isValid from './../Helpers/ValidityChecks';
-import { onMount } from 'svelte';
-  
   export let newShopName = '';
   export let newShopDesc = '';
   export let newShopPrice: string|number = ''
@@ -13,7 +13,9 @@ import { onMount } from 'svelte';
   export let add: (e: Event) => void;
   export let cancel: (e: Event) => void;
 
-  // can this form be submitted
+  /**
+   * This form must have a name and a price more than 0 to be added
+   */
   $:canSubmit = isValid.text(newShopName)
     && isValid.floatOverZero(parseFloat(newShopPrice !== null ? newShopPrice.toString() : '0')); 
 
