@@ -1,63 +1,50 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from "svelte";
-  import type { MarkerObjectsStore, Shop, Coord } from "../Interfaces";
-  import { Map, polyline, Polyline } from "leaflet";
-  import MarkerHelpers from '../Helpers/MarkerHelpers'
-  import OSRHelper from "../Helpers/OSRHelper";
-  import Application from "../Application";
-import { ShopStore } from "../Stores/ShopStore";
-  // import Openrouteservice from "../../public/js/ors-js-client";
-  const { getMarkerBoundingBox } = MarkerHelpers;
+  // interfaces
+  import type { Coord } from "../Interfaces";
+  import type { Map, Polyline } from "leaflet";
   
-  const MAP_LONGPRESS_MS = 666;
-
-  export let shops: Shop[];
-  let map: Map;
+  // svelte methods
+  import { onMount, createEventDispatcher } from "svelte";
+  
+  // svelte stores
+  import { ShopStore } from "../Stores/ShopStore";
+  import { HomeLocation } from "../Stores/HomeLocation";
+  
+  // our code
+  import Application from "../Application";
 
   const dispatch = createEventDispatcher();
 
-  
-  let existingMarkers: MarkerObjectsStore = {};
+  let application: Application;
+
+  let map: Map;
   let polyLines: Polyline[] = [];
 
-
   export const flyTo = (coord: Coord) => {
-    if(map === undefined) return;
-    map.flyTo([coord.lat, coord.lng], 17);
+    if(application === undefined) return;
+    application.flyTo(coord);
   }
 
-  /** Remove a specific polyLine */
-  const clearPolyLine = (_polyLine: Polyline) => {
-    const polyLine = polyLines.find(e => e === _polyLine);
-    polyLine && polyLine.remove();
-  }
-  /** Remove all current polyLines */
-  const clearPolyLines = () => {
-    polyLines.forEach( polyline => {
-      polyline.remove();
-    })
-  }
-
-  /** Just a wrapper for ts-ignore mess*/
+  /**
+   * A helper to get the leaflet root object without lots of ts-ignore directives
+   */
   const LEAFLET = () => {
     //@ts-ignore
     return L === undefined ? undefined : L;
   }
 
+
   export const drawRoute = (latLonArray: Array<[number,number]>) => {
-    if(LEAFLET() === undefined) return;
-
-    // clear any existing polylines
-    clearPolyLines();
-
-    const newPolyLine = LEAFLET().polyline(latLonArray, {color: 'red'}).addTo(map);
-    polyLines.push(newPolyLine);
+    if(application === undefined) return;
+    application.clearLines();
+    application.drawLine(latLonArray);
+    application.fitCoords(latLonArray);
   }
 
   // required to access window objects
   onMount(() => {
     
-    const application = new Application({
+    application = new Application({
       debug: true,
       startLocation: [51.46521575117327, -0.2595353314797258],
       mapBox: {
@@ -70,8 +57,12 @@ import { ShopStore } from "../Stores/ShopStore";
 
     ShopStore.subscribe(shops => {
       application.drawMarkers(shops);
-      application.fitBounds();
+      application.fitBoundsToAllMarkers();
     });
+
+    HomeLocation.subscribe(coord => {
+      application.drawHouse(coord)
+    })
 
     application.onMarkerClick(e => {
       dispatch('markerClick', e)

@@ -32,5 +32,6 @@ const getMarkerBoundingBox = (markers: MarkerObjectsStore): LatLngBoundsExpressi
 }
 
 export default {
-  getMarkerBoundingBox: getMarkerBoundingBox
+  getMarkerBoundingBox,
+  latLonBoundingBox
 }
