@@ -1,8 +1,6 @@
 # Things to do
- 
-- Add a home icon
-- Where should Application go? Can't handle info from other panels if it lives
-  inside of LeafletMap.svelte
+
+- write a readme 
 
 ## Notes & useful links
 

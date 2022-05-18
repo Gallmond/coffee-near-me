@@ -17,9 +17,6 @@
 
   let application: Application;
 
-  let map: Map;
-  let polyLines: Polyline[] = [];
-
   export const flyTo = (coord: Coord) => {
     if(application === undefined) return;
     application.flyTo(coord);
@@ -53,7 +50,7 @@
     });
 
     application.setLeaflet( LEAFLET() )
-    map = application.createMap('map');
+    application.createMap('map');
 
     ShopStore.subscribe(shops => {
       application.drawMarkers(shops);

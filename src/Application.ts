@@ -38,11 +38,6 @@ class Application {
 
   constructor(options: ApplicationOptions | null = null) {
     this.options = options ?? null;
-
-    if (this.option('debug')) {
-      console.log("created Application");
-      console.log('With options', this.options);
-    }
   }
 
   option(key:string): any{
@@ -81,7 +76,6 @@ class Application {
 
   /** zoom the map to contain these coords */
   fitCoords(latLonArray: [number,number][]): void{
-    console.log('fitCoords', latLonArray);
     const bounds = latLonBoundingBox(latLonArray);
     this.map.flyToBounds(bounds, {
       maxZoom: 17,

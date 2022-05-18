@@ -61,7 +61,6 @@ import { ShopStore } from "../Stores/ShopStore";
   }
 
   const navigateButtonClicked = () => {
-    console.log('navigateButtonClicked');
     dispatch('navigateToShop', shop);
   }
 

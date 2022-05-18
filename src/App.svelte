@@ -39,6 +39,8 @@
   let newShopDesc: string;
   let newShopPrice: number;
 
+  const debounceSaveTimeout = 2500;
+
   /**
    * Adds a new shop to the ShopStore
    */
@@ -51,7 +53,6 @@
       location: lastClickedCoord,
     });
     ShopStore.set(existingShops);
-    console.log($ShopStore);
   };
 
   /**
@@ -69,7 +70,6 @@
    */
   let longPressPendingRelease = false;
   const mapLongPress = (e) => {
-    console.log("mapLongPress", e);
     const leafletEvent = e.detail;
     longPressPendingRelease = true;
 
@@ -78,8 +78,6 @@
     }
   };
   const mapClicked = (e) => {
-    console.log("mapClicked", e);
-
     /**
      * If we're waiting for a long press release, don't do anything.
      */
@@ -104,7 +102,6 @@
    * Overlay add button clicked
    */
   const addClicked = (e) => {
-    console.log("addClicked", e);
     addNewShop();
     // after adding the shop clear the input fields and set the overlay to invisible
     newMarkerPopup.clearFields();
@@ -114,12 +111,10 @@
    * Overlay cancel button clicked
    */
   const cancelClicked = (e) => {
-    console.log("cancelClicked", e);
     newMarkerOverlayVisible = false;
   };
 
   const markerClicked = (e) => {
-    console.log("marker clicked", e, e.detail);
     let leafletMouseEvent: L.LeafletMouseEvent = e.detail;
     let { latlng } = leafletMouseEvent;
 
@@ -142,7 +137,6 @@
 
   let selectedShop: Shop | undefined;
   const itemClicked = (e) => {
-    console.log("itemClicked", e);
     const thisShop: Shop = e.detail;
     leafletMap.flyTo(thisShop.location);
     selectedShop = thisShop === selectedShop ? undefined : thisShop;
@@ -160,11 +154,11 @@
    * Attempt to read any stored existing directions from the Store
    * @param {string} pretendId Id composed of the to:from latlons
    */
-  const getExistingDirections = ( pretendId:string ): object|null =>{
+  const getExistingDirections = (pretendId: string): object | null => {
     // how long until directions are considered old
-    const expiresMs = (1000 * 60 * 60 * 24 * 5); // 5 days
+    const expiresMs = 1000 * 60 * 60 * 24 * 5; // 5 days
 
-    if( !Object.keys($MemoisedDirections).includes(pretendId) ){
+    if (!Object.keys($MemoisedDirections).includes(pretendId)) {
       return;
     }
 
@@ -173,18 +167,16 @@
 
     if (now - existing.added < expiresMs) {
       // use the existing info if it is not too old
-      console.log("existing directions found", pretendId, existing);
       return existing.json;
     }
     // remove it if it's too old
-    console.log("old existing directions found", pretendId, existing);
     MemoisedDirections.update((existing) => {
       delete existing[pretendId];
       return existing;
     });
 
     return;
-  }
+  };
 
   const onNavigate = async (e) => {
     const shop: Shop = e.detail;
@@ -199,7 +191,6 @@
 
     // if we've not been set above, now make an actual API call
     if (!parsedDirections) {
-      console.log("requesting new directions");
       parsedDirections = await getWalkingDirections(from, to);
 
       // saving directions
@@ -212,15 +203,17 @@
       });
     }
 
-    console.log("onNavigate", from, to);
-
     GeoJSONToMapDirections(parsedDirections);
 
     directions = parsedDirections;
     directionsOpen = true;
-
   };
 
+  /**
+   * Parse a list of direction coordinates from GeoJSON and pass them to the 
+   * map's drawRoute method
+   * @param GeoJSON
+   */
   const GeoJSONToMapDirections = (GeoJSON) => {
     // get the lines
     const features = GeoJSON.features;
@@ -238,40 +231,14 @@
 
   let saveDebounceId: NodeJS.Timeout;
   const saveDebounce = (key: string, value: any) => {
-    if (saveDebounceId) {
-      clearTimeout(saveDebounceId);
-    }
+    if (saveDebounceId) clearTimeout(saveDebounceId);
     saveDebounceId = setTimeout(() => {
       save(key, value);
-    }, 5000);
+    }, debounceSaveTimeout);
   };
-
-  const storeUpdaters = (): void => {
-    // update the stores on changes
-    ShopStore.subscribe((shops) => {
-      saveDebounce("$ShopStore", shops);
-    });
-    HomeLocation.subscribe((homeLocation) => {
-      saveDebounce("$HomeLocation", homeLocation);
-    });
-    MemoisedDirections.subscribe((directions) => {
-      saveDebounce("$MemoisedDirections", directions);
-    });
-    SplashOverlayVisible.subscribe((isVisible) => {
-      saveDebounce("$SplashOverlayVisible", isVisible);
-      splashOverlayVisible = isVisible;
-    });
-  };
-  storeUpdaters();
-
-  onMount(() => {
-    // load the stores
-    loadSavedData();
-  });
 
   /** Load data from localstorage into the Stores */
   const loadSavedData = () => {
-    console.log("loadSavedData");
     if (!window.localStorage) {
       throw new Error(
         "loadSavedData called before window.localStorage is available"
@@ -306,9 +273,29 @@
     }
   };
 
-  //TEMP for testing
-  // selectedShop = $ShopStore[0];
-  // newMarkerOverlayVisible = true;
+  /** register all the store listners for saving to localStorage*/
+  const storeUpdaters = (): void => {
+    // update the stores on changes
+    ShopStore.subscribe((shops) => {
+      saveDebounce("$ShopStore", shops);
+    });
+    HomeLocation.subscribe((homeLocation) => {
+      saveDebounce("$HomeLocation", homeLocation);
+    });
+    MemoisedDirections.subscribe((directions) => {
+      saveDebounce("$MemoisedDirections", directions);
+    });
+    SplashOverlayVisible.subscribe((isVisible) => {
+      saveDebounce("$SplashOverlayVisible", isVisible);
+      splashOverlayVisible = isVisible;
+    });
+  };
+  storeUpdaters();
+
+  onMount(() => {
+    // load the stores
+    loadSavedData();
+  });
 </script>
 
 <main>
@@ -347,7 +334,6 @@
   <div class="right">
     <LeafletMap
       bind:this={leafletMap}
-      shops={$ShopStore}
       on:mapClick={mapClicked}
       on:mapLongPress={mapLongPress}
       on:markerClick={markerClicked}

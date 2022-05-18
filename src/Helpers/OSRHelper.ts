@@ -18,8 +18,6 @@ const ORSRequest = async (path: string, getParams: Record<string, string>): Prom
 }
 
 const getWalkingDirections = async (from: Coord, to: Coord): Promise<null> => {
-  console.log('getWalkingDirections', from, to);
-
   // nb: ors expect lng then lat
   const start = [from.lng, from.lat].join(',');
   const end = [to.lng, to.lat].join(',');
