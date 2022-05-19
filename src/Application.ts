@@ -1,8 +1,7 @@
-import type { LeafletMouseEvent, MapOptions, LeafletMouseEventHandlerFn, LeafletEventHandlerFn, Marker } from "leaflet";
+import type { MapOptions, LeafletMouseEventHandlerFn, LeafletEventHandlerFn, Marker } from "leaflet";
 import type { Coord, Latitude, Longitude, Shop } from "./Interfaces";
 import { ShopStore } from "./Stores/ShopStore";
 import MarkerHelpers from "./Helpers/MarkerHelpers";
-import type HomeLocationListItem from "./Components/HomeLocationListItem.svelte";
 const { getMarkerBoundingBox, latLonBoundingBox } = MarkerHelpers;
 
 interface MapBoxOptions {
