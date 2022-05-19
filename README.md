@@ -3,6 +3,8 @@
 Keep track of where the cheapest places to get your fix are near you, and get
 the route there!
 
+<img src='screenshot.png'>
+
 ## Ingredients
 - [Typescript](https://www.typescriptlang.org/)
 - [Svelte](https://svelte.dev/)

@@ -67,7 +67,7 @@ import { ShopStore } from "../Stores/ShopStore";
 </script>
 
 {#if shop !== undefined}
-<div class="container wireframe">
+<div class="container">
 
   {#if editing}
     <TextInput bind:value={shop.name} placeholder={shop.name ?? 'shop name'} />
